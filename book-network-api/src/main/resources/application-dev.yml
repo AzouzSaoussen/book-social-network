@@ -10,21 +10,36 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        format_sql: true
+      format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   mail:
     host: localhost
     port: 1025
     username: azouz
     password: azouz
     properties:
-      mail:
-        smtp:
-          trust: "*"
-        auth: true
-        starttls:
-          enabled: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
+      [mail.smtp.trust]: "*"
+      [mail.smtp.auth]: true
+      [mail.smtp.starttls.enabled]: true
+      [mail.smtp.connectiontimeout]: 5000
+      [mail.smtp.timeout]: 3000
+      [mail.smtp.writetimeout]: 5000
+  thymeleaf:
+    prefix:
+      classpath: /templates/
+      suffix: .html
+      mode: HTML
+      encoding: UTF-8
+application:
+  security:
+    jwt:
+       secret-key : 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+       expiration : 8640000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+server:
+     port: 8088
+
