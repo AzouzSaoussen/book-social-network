@@ -56,6 +56,6 @@ Make sure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/book-sharing-app.git
-   cd book-sharing-app
+   ghttps://github.com/AzouzSaoussen/book-social-network.git
+   cd book-social-network
 
