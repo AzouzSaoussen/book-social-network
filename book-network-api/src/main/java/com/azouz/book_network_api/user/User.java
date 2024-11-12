@@ -1,11 +1,12 @@
 package com.azouz.book_network_api.user;
 
+import com.azouz.book_network_api.book.Book;
+import com.azouz.book_network_api.history.BookTransactionHistory;
 import com.azouz.book_network_api.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,7 +45,10 @@ public class User implements UserDetails, Principal {
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore //prevent it from being serialized
    private List<Role> roles;
-
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> histories;
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
