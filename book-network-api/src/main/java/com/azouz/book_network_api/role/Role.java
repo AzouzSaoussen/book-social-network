@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class Role {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
     @Column(unique = true)
     private String name;
     @ManyToMany(mappedBy = "roles")
