@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Token {
     @Id
     @GeneratedValue
-    UUID id;
+    Integer id;
     private  String token;
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;

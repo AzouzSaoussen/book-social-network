@@ -1,33 +1,38 @@
 package com.azouz.book_network_api.user;
 
 import com.azouz.book_network_api.book.Book;
-import com.azouz.book_network_api.common.BaseEntity;
 import com.azouz.book_network_api.history.BookTransactionHistory;
 import com.azouz.book_network_api.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Integer;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "_user")
 @EntityListeners(AuditingEntityListener.class)
-public class User extends BaseEntity implements UserDetails, Principal {
-
+public class User implements UserDetails, Principal {
+    @Id
+    @GeneratedValue
+    private Integer id;
     private String firstname;
     private String lastname;
 
@@ -39,11 +44,19 @@ public class User extends BaseEntity implements UserDetails, Principal {
     private boolean enabled;
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore //prevent it from being serialized
-    private List<Role> roles;
+   private List<Role> roles;
     @OneToMany(mappedBy = "owner")
     private List<Book> books;
     @OneToMany(mappedBy = "user")
     private List<BookTransactionHistory> histories;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    @Column(insertable=false)
+    private LocalDateTime lastModifiedDate;
+
+
     @Override
     public String getName() {
         return email;

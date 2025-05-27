@@ -1,9 +1,7 @@
 package com.azouz.book_network_api.feedback;
 
-
 import com.azouz.book_network_api.book.Book;
 import com.azouz.book_network_api.common.BaseEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -13,18 +11,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+
 @Getter
 @Setter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Feedback extends BaseEntity {
 
-    @Column
+public class Feedback extends BaseEntity {
     private Double note;
     private String comment;
+
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
+
 }
