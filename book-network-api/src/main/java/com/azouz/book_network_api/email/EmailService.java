@@ -20,6 +20,7 @@ import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE
 @Service
 @RequiredArgsConstructor
 @EnableAsync
+
 public class EmailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
@@ -52,7 +53,7 @@ public class EmailService {
         properties.put("activation_code", activationCode);
         Context context = new Context();
         context.setVariables(properties);
-        helper.setFrom("azzouz.saoussen2712@gmail.com");
+        helper.setFrom("contact@azouzcoding.com");
         helper.setTo(to);
         helper.setSubject(subject);
         String template = templateEngine.process(templateName, context);
