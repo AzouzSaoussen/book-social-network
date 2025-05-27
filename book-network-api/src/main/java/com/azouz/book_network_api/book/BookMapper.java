@@ -1,5 +1,6 @@
 package com.azouz.book_network_api.book;
 
+import com.azouz.book_network_api.file.FileUtils;
 import com.azouz.book_network_api.history.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class BookMapper {
 
     public BookResponse toBookResponse(Book book) {
 
+
         return BookResponse.builder()
                 .id(book.getId())
                 .title(book.getTitle())
@@ -30,7 +32,7 @@ public class BookMapper {
                 .shareable(book.isShareable())
                 .owner(book.getOwner().fullName())
                 // todo implement this later
-                //.cover()
+                .cover(FileUtils.readFileFromLocation(book.getBookCover()))
                 .build();
 
     }
