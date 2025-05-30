@@ -6,10 +6,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("auth")
 @RequiredArgsConstructor
 @Tag(name="Authentication")
@@ -30,9 +29,10 @@ public class AuthenticationController {
                 );
     }
     @GetMapping("/activate")
-    public ResponseEntity<String> confirm(@RequestParam String token) throws MessagingException {
+    public void confirm(
+            @RequestParam String token
+    ) throws MessagingException {
         authenticationService.activateAccount(token);
-        return ResponseEntity.ok("Account activated successfully.");
     }
 
 }
