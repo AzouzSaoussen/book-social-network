@@ -2,6 +2,8 @@ package com.azouz.book_network_api.handler;
 
 import com.azouz.book_network_api.exception.OperationNotPermittedException;
 import jakarta.mail.MessagingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static com.azouz.book_network_api.handler.BusinessErrorCodes.ACCOUNT_LOCKED;
@@ -17,6 +20,14 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Map<String, String> VALIDATION_MESSAGES = Map.of(
+            "100", "Title must not be blank",
+            "101", "Author name must not be blank",
+            "102", "ISBN must not be blank",
+            "103", "Synopsis must not be blank"
+    );
+
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<ExceptionResponse> handleException(LockedException exp){
 
@@ -46,9 +57,9 @@ public class GlobalExceptionHandler {
         Set<String> errors = new HashSet<>();
         exp.getBindingResult().getAllErrors()
                 .forEach(error -> {
-                    //var fieldName = ((FieldError) error).getField();
-                    var errorMessage = error.getDefaultMessage();
-                    errors.add(errorMessage);
+                    var errorCode = error.getDefaultMessage(); // This is the code like "100"
+                    var friendlyMessage = VALIDATION_MESSAGES.getOrDefault(errorCode, "Invalid value");
+                    errors.add(friendlyMessage);
                 });
 
         return ResponseEntity
@@ -63,7 +74,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception exp) {
         //log the exception
-        exp.printStackTrace();
+        logger.error(exp.getMessage(), exp);
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
                 .body(
@@ -83,6 +94,7 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+
 
 
 }

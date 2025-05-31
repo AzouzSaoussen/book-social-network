@@ -32,15 +32,28 @@ public class BookService {
     private final BookMapper bookMapper;
     private final FileStorageService fileStorageService;
     private final UserRepository userRepository;
+
     public Integer save(BookRequest request, Authentication connectedUser) {
+
+        // Get current user --> owner
         User user = (User) connectedUser.getPrincipal();
         log.info("user to use as owner: {}", user);
-        Book book = bookMapper.toBook(request);
-        log.info("Mapped book : {}", book);
         Integer userId = user.getId();
         User managedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        book.setOwner(managedUser);
+        Book book;
+        if(request.id() != null) {
+            // Update existing book
+            book = bookRepository.findById(request.id()).orElseThrow(() -> new RuntimeException("Book not found"));
+            if(!book.getOwner().getId().equals(userId)) {
+                throw new OperationNotPermittedException("You do not have permission to use this operation");
+            }
+            book = bookMapper.updateBookFromRequest(book, request);
+        }else{
+            book = bookMapper.toBook(request);
+            book.setOwner(managedUser);
+        }
+
         return bookRepository.save(book).getId() ;
     }
 
@@ -72,7 +85,8 @@ public class BookService {
     public PageResponse<BookResponse> findAllBooksByOwner(int page, int size, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Book> books= bookRepository.findAll(BookSpecification.withOwnerId(user.getName()), pageable);
+        log.info("the connected user name: {}", user.getName());
+        Page<Book> books= bookRepository.findAll(BookSpecification.withOwnerId(user.getId().toString()), pageable);
         List<BookResponse> booksResponses = books.stream()
                 .map(bookMapper::toBookResponse)
                 .toList();
@@ -143,7 +157,7 @@ public class BookService {
         return bookId;
     }
 
-    public Integer borrowBook(Integer bookId, Authentication connectedUser) {
+    public Integer  borrowBook(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
         if (book.isArchived() || !book.isShareable()) {
@@ -153,6 +167,7 @@ public class BookService {
         if (Objects.equals(book.getCreatedBy(), connectedUser.getName())) {
             throw new OperationNotPermittedException("You cannot borrow your own book");
         }
+        log.info("the current user id is {} and its type is {}" , user.getId(), user.getId().getClass().getName());
         final boolean isAlreadyBorrowedByUser = transactionHistoryRepository.isAlreadyBorrowedByUser(bookId, user.getId());
         if (isAlreadyBorrowedByUser) {
             throw new OperationNotPermittedException("You already borrowed this book and it is still not returned or the return is not approved by the owner");

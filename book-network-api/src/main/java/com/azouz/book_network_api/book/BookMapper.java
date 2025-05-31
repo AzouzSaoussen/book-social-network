@@ -12,12 +12,21 @@ public class BookMapper {
                 //.id(request.id())
                 .title(request.title())
                 .authorName(request.authorName())
+                .isbn(request.isbn())
                 .synopsis(request.synopsis())
                 .archived(false)
                 .shareable(request.shareable())
                 .build();
     }
-
+    public Book updateBookFromRequest(Book book, BookRequest request) {
+        book.setTitle(request.title());
+        book.setAuthorName(request.authorName());
+        book.setIsbn(request.isbn());
+        book.setSynopsis(request.synopsis());
+        book.setShareable(request.shareable());
+        // don't update owner or bookCover here
+        return book;
+    }
     public BookResponse toBookResponse(Book book) {
 
 

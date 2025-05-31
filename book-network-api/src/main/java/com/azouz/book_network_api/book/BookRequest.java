@@ -1,11 +1,7 @@
 package com.azouz.book_network_api.book;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
-
-import java.util.UUID;
 
 public record BookRequest(
         Integer id,
