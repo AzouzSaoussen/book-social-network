@@ -6,8 +6,11 @@ import com.azouz.book_network_api.file.FileStorageService;
 import com.azouz.book_network_api.history.BookTransactionHistory;
 import com.azouz.book_network_api.history.BookTransactionHistoryRepository;
 import com.azouz.book_network_api.user.User;
+import com.azouz.book_network_api.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +26,21 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class BookService {
+    private  final Logger log = LoggerFactory.getLogger(BookService.class);
     private final BookTransactionHistoryRepository transactionHistoryRepository;
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final FileStorageService fileStorageService;
+    private final UserRepository userRepository;
     public Integer save(BookRequest request, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
+        log.info("user to use as owner: {}", user);
         Book book = bookMapper.toBook(request);
-        book.setOwner(user);
+        log.info("Mapped book : {}", book);
+        Integer userId = user.getId();
+        User managedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        book.setOwner(managedUser);
         return bookRepository.save(book).getId() ;
     }
 
@@ -43,8 +53,11 @@ public class BookService {
     public PageResponse<BookResponse> findAllBooks(int page, int size, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Book> books= bookRepository.findAllDisplayableBooks(pageable, user.getId());
+        log.info("the connected user id: {}", user.getId());
+        Page<Book> books= bookRepository.findAllDisplayableBooks(pageable, user.getId().toString());
+        log.info("Books from DB : {}", books);
         List<BookResponse> booksResponse = books.stream().map(bookMapper::toBookResponse).toList();
+        log.info("mapped Books : {}", booksResponse);
         return new PageResponse<>(
                 booksResponse,
                 books.getNumber(),

@@ -5,10 +5,7 @@ import com.azouz.book_network_api.feedback.Feedback;
 import com.azouz.book_network_api.history.BookTransactionHistory;
 import com.azouz.book_network_api.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -20,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
+@Builder
 public class Book extends BaseEntity {
 
     private String title;
