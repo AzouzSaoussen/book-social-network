@@ -20,8 +20,10 @@ export class MenuComponent implements OnInit{
     });
   }
 
-  async logout() {
-    console.log('log out ');
+  logout() {
+   localStorage.removeItem('token');
+   window.location.reload();
+
   }
 
 }

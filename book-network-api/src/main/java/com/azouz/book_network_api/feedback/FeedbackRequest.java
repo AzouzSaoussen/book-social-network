@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record FeedbackRequest(
+public record  FeedbackRequest(
         @Positive(message = "200")
         @Min(value = 0, message = "201")
         @Max(value = 5, message = "202")
