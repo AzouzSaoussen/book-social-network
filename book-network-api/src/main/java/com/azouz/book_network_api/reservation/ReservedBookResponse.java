@@ -1,23 +1,18 @@
-package com.azouz.book_network_api.book;
+package com.azouz.book_network_api.reservation;
 
 import lombok.*;
-
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookResponse {
+public class ReservedBookResponse {
     private Integer id;
     private String title;
     private String authorName;
     private String isbn;
-    private String synopsis;
-    private String owner;
-    private byte[] cover;
     private double rate;
-    private boolean archived;
-    private boolean shareable;
-
+    private boolean returned;
+    private boolean returnApproved;
 }

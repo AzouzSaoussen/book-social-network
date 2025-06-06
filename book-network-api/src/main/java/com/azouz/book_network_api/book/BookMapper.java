@@ -40,7 +40,6 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
                 .owner(book.getOwner().fullName())
-                // todo implement this later
                 .cover(FileUtils.readFileFromLocation(book.getBookCover()))
                 .build();
 
@@ -57,4 +56,5 @@ public class BookMapper {
                 .returnApproved(bookTransactionHistory.isReturnApproved())
                 .build();
     }
+
 }

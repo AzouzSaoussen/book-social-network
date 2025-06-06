@@ -110,5 +110,14 @@ public class BookController {
         bookService.uploadBookCoverPicture(file, connectedUser, bookId);
         return ResponseEntity.accepted().build();
     }
+    /*@GetMapping("/waiting-list")
+    public ResponseEntity<PageResponse<BookResponse>> findAllWaitingBooks(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name ="size", defaultValue = "10", required = false) int size,
+            Authentication connectedUser
+    ){
+        bookService.getApprovedReturnedBooks(connectedUser);
+        return
+    }*/
 
 }
