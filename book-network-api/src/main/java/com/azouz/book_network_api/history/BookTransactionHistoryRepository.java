@@ -8,19 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface BookTransactionHistoryRepository extends JpaRepository<BookTransactionHistory, Integer> {
-   @Query("""
-           SELECT history
-           FROM BookTransactionHistory history
-           WHERE history.user.id = :userId
-           """)
-    Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable, @Param("userId") Integer userId);
+    Page<BookTransactionHistory> findByUserId(Pageable pageable, Integer userId);
 
-    @Query("""
-            SELECT history
-            FROM BookTransactionHistory history
-            WHERE history.book.createdBy = :userId
-            """)
-    Page<BookTransactionHistory> findAllReturnedBooks(Pageable pageable, @Param("userId") Integer userId);
+    Page<BookTransactionHistory> findByBookCreatedBy(Pageable pageable, String userId);
 
     @Query("""
             SELECT (COUNT(*) >0) AS isBorrowed
@@ -40,22 +30,12 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
         """)
     boolean isAlreadyBorrowed(@Param("bookId") Integer bookId);
 
-    @Query("""
-        SELECT transaction
-        FROM BookTransactionHistory  transaction
-        WHERE transaction.user.id = :userId
-        AND transaction.book.id = :bookId
-        AND transaction.returned = false
-        AND transaction.returnApproved = false
-        """)
-    Optional<BookTransactionHistory> findByBookIdAndUserId(@Param("bookId") Integer bookId, @Param("userId") Integer userId);
-    @Query("""
-        SELECT transaction
-        FROM BookTransactionHistory  transaction
-        WHERE transaction.book.owner.id = :userId
-        AND transaction.book.id = :bookId
-        AND transaction.returned = true
-        AND transaction.returnApproved = false
-        """)
-    Optional<BookTransactionHistory> findByBookIdAndOwnerId(Integer bookId, Integer userId);
+    Optional<BookTransactionHistory> findByBookIdAndUserIdAndReturnedFalseAndReturnApprovedFalse(Integer bookId, Integer userId);
+
+
+    Optional<BookTransactionHistory> findByBookIdAndBookOwnerIdAndReturnedTrueAndReturnApprovedFalse(Integer bookId, Integer userId);
+
+
+    Optional<BookTransactionHistory> findFirstByBookIdOrderByCreatedDateDesc(Integer bookId);
+
 }
