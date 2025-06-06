@@ -12,4 +12,6 @@ export type { FeedbackResponse } from './models/feedback-response';
 export type { PageResponseBookResponse } from './models/page-response-book-response';
 export type { PageResponseBorrowedBookResponse } from './models/page-response-borrowed-book-response';
 export type { PageResponseFeedbackResponse } from './models/page-response-feedback-response';
+export type { PageResponseReservedBookResponse } from './models/page-response-reserved-book-response';
 export type { RegistrationRequest } from './models/registration-request';
+export type { ReservedBookResponse } from './models/reserved-book-response';
