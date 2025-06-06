@@ -2,6 +2,7 @@ package com.azouz.book_network_api.user;
 
 import com.azouz.book_network_api.book.Book;
 import com.azouz.book_network_api.history.BookTransactionHistory;
+import com.azouz.book_network_api.reservation.Reservation;
 import com.azouz.book_network_api.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -55,6 +56,9 @@ public class User implements UserDetails, Principal {
     @LastModifiedDate
     @Column(insertable=false)
     private LocalDateTime lastModifiedDate;
+    @OneToMany(mappedBy = "user")
+    private List<Reservation> reservations;
+
 
 
     @Override
