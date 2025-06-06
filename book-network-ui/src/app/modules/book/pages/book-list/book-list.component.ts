@@ -3,6 +3,7 @@ import {BookResponse} from "../../../../services/models/book-response";
 import {PageResponseBookResponse} from "../../../../services/models/page-response-book-response";
 import {BookService} from "../../../../services/services/book.service";
 import {Router} from "@angular/router";
+import {ReservationService} from "../../../../services/services/reservation.service";
 
 @Component({
   selector: 'app-book-list',
@@ -19,7 +20,8 @@ export class BookListComponent implements OnInit{
 
   constructor(
     private bookService: BookService,
-    private router: Router
+    private router: Router,
+    private reservationService: ReservationService
   ) {
   }
 
@@ -83,6 +85,14 @@ export class BookListComponent implements OnInit{
       },
       error: (err) => {
         console.log(err);
+        this.reservationService.save({
+          'book-id': book.id as number
+        }).subscribe({
+          next:()=>{
+            this.level = 'success';
+            this.message = `The book ${book.title} has been reserved`;
+          }
+        })
         this.level = 'error';
         this.message = err.error.error;
       }
