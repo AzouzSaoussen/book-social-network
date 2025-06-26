@@ -15,20 +15,19 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
-    host: localhost
-    port: 1025
-    username: azouz
-    password: azouz
+    host: ${EMAIL_HOSTNAME}
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
-          trust: "*"
           auth: true
+          trust: "*"
           starttls:
-            enabled: true
-          connectiontimeout: 5000
-          timeout: 3000
-          writetimeout: 5000
+            enable: true
+            required: true
+        protocol: smtp
   thymeleaf:
     prefix:
       classpath: /templates/
@@ -42,10 +41,13 @@ application:
        expiration : 8640000
   mailing:
     frontend:
-      activation-url: http://localhost:4200/activate-account
+      activation-url: http://localhost:8080/activate-account
+  cors:
+    origins: http://localhost:4200,http://localhost:8080,http://localhost
+
   file:
     upload:
-      photos-output-path: ./uploads
+      photos-output-path: ./app/uploads
 server:
      port: 8088
 

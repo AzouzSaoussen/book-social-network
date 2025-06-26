@@ -2,6 +2,7 @@ package com.azouz.book_network_api.config;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -18,13 +19,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 
 @Configuration
 @RequiredArgsConstructor
 public class BeansConfig {
     private final UserDetailsService userDetailsService;
+    @Value("${application.cors.origins:*}") //Making the default value * is not recommended for production; we are using this only for production
+    private List<String> allowedOrigins;
 
     @Bean
     public AuthenticationProvider authenticationProvider(){
@@ -49,20 +52,20 @@ public class BeansConfig {
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        config.setAllowedHeaders(Arrays.asList(
-                HttpHeaders.ORIGIN,
+        //config.setAllowCredentials(true);
+        config.setAllowedOrigins(allowedOrigins);
+        config.setAllowedHeaders(Arrays.asList("*"
+                /*HttpHeaders.ORIGIN,
                 HttpHeaders.CONTENT_TYPE,
                 HttpHeaders.ACCEPT,
-                HttpHeaders.AUTHORIZATION
-        ));
-        config.setAllowedMethods(Arrays.asList(
-                "GET",
+                HttpHeaders.AUTHORIZATION*/
+        )); //not recommended for prod
+        config.setAllowedMethods(Arrays.asList("*"
+           /*     "GET",
                 "POST",
                 "DELETE",
                 "PUT",
-                "PATCH"
+                "PATCH"*/
         ));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
