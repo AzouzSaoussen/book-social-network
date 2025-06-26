@@ -6,7 +6,7 @@ on:
     paths:
       - book-network-api/**
       - docker/backend/**
-      - 'docker-compose.yml'
+      - docker-compose.yml
       - .github/workflows/*-backend.yml
 
 jobs:
@@ -63,7 +63,7 @@ jobs:
           distribution: 'corretto'
       - name: Compile project
         run: |
-            cd book-network
+            cd book-network-api
             ./mvnw clean compile
   build-image:
     name: Build Docker image
@@ -133,7 +133,7 @@ jobs:
           key: ${{secrets.VPS_SSH_PRIVATE_KEY}}
           script: |
             export EMAIL_HOST_NAME="${{ secrets.EMAIL_HOST_NAME }}"
-            export EMAIL_USER_NAME="${{ secrets.EMAIL_USERNAME }}"
+            export EMAIL_USERNAME="${{ secrets.EMAIL_USERNAME }}"
             export EMAIL_PASSWORD="${{ secrets.EMAIL_PASSWORD }}"
             mkdir -p ci-cd
             cd ci-cd
