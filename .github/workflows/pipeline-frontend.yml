@@ -93,3 +93,4 @@ jobs:
           cd ci-cd
           docker compose pull -q
           docker compose up -d
+#re-lunch the frontend workflow
