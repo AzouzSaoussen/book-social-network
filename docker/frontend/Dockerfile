@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN ng build --configuration=production
+RUN npx ng build --configuration=production
 
 FROM nginx:alpine
 
