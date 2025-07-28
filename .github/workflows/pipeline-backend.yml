@@ -147,6 +147,13 @@ jobs:
     name: Deploy
     runs-on: self-hosted
     needs: [build-image]
+    env:
+      SPRING_PROFILES_ACTIVE: prod
+      EMAIL_HOSTNAME: ${{ secrets.EMAIL_HOSTNAME }}
+      EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
