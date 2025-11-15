@@ -33,6 +33,7 @@ public class FileStorageService {
             @Nonnull String fileUploadSubPath
     ){
         final String finalUploadPath = fileUploadPath + separator + fileUploadSubPath;
+        log.info("UPLOAD ROOT = {}", finalUploadPath);
         File targetFolder = new File(finalUploadPath);
 
         if (!targetFolder.exists()) {
