@@ -29,12 +29,30 @@ public class ReservationService {
         User currentUser =(User) connectedUser.getPrincipal();
         User user = userRepository.findById(currentUser.getId()).orElseThrow(()-> new RuntimeException("user mot found"));
         Book book = bookRepository.findById(bookId).orElseThrow(()-> new RuntimeException("book not found"));
-        return reservationRepository.save(
-                Reservation.builder()
-                        .book(book)
-                        .user(user)
-                        .build()
-        ).getId();
+        // Check if user already has a reservation for this book
+        boolean exists = reservationRepository
+                .findByBookOrderByQueuePositionAsc(book)
+                .stream()
+                .anyMatch(r -> r.getUser().getId().equals(user.getId()));
+
+        if (exists) {
+            throw new RuntimeException("You have already reserved this book.");
+        }
+
+        // Compute FIFO queue position
+        Integer lastPosition = reservationRepository
+                .findQueuePositionsDesc(book)
+                .stream()
+                .findFirst()
+                .orElse( -1 );
+
+        Reservation reservation = Reservation.builder()
+                .book(book)
+                .user(user)
+                .queuePosition(lastPosition + 1)
+                .build();
+
+        return reservationRepository.save(reservation).getId();
     }
 
     public PageResponse<ReservedBookResponse> getReservedBooksByUser(int page, int size, Authentication connectedUser) {

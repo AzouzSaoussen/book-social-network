@@ -41,7 +41,12 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/webjars/**",
                                 "/swagger-ui.html" //swagger and openApi
-                        ).permitAll().anyRequest().authenticated()
+                        ).permitAll()
+                                .requestMatchers("/ws/**", "/ws/info/**").permitAll()
+                                .requestMatchers("/topic/**").permitAll()
+                                .requestMatchers("/app/**").permitAll()
+                                .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

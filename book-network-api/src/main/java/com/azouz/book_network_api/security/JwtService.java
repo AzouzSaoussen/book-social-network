@@ -2,6 +2,7 @@ package com.azouz.book_network_api.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +23,8 @@ public class JwtService { //service will generate token, validate it, and extrac
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
-    public String generateToken(UserDetails userDetails, HashMap<String, Object> claims){
-        return generateToken(new HashMap<>(),userDetails);
-    }
-
-    private String generateToken(Map<String,Object> claims , UserDetails userDetails) {
-        return buildToken(claims, userDetails,jwtExpiration);
+    public String generateToken(UserDetails userDetails, Map<String, Object> claims){
+        return buildToken(claims, userDetails, jwtExpiration);
     }
 
     private String buildToken(Map<String, Object> extraClaims,
@@ -43,12 +40,11 @@ public class JwtService { //service will generate token, validate it, and extrac
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date((System.currentTimeMillis())))
-                .setExpiration(new Date(System.currentTimeMillis()+ jwtExpiration))
-                .claim("authorities",authorities)
-                .signWith(getSignInKey())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .claim("authorities", authorities)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS384)
                 .compact();
-
     }
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

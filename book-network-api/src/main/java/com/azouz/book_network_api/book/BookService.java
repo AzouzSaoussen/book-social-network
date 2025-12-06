@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,8 @@ public class BookService {
     private final BookMapper bookMapper;
     private final FileStorageService fileStorageService;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher publisher;
+
 
     public Integer save(BookRequest request, Authentication connectedUser) {
         // Get current user --> owner
@@ -212,14 +215,20 @@ public class BookService {
         }
         User user = ((User) connectedUser.getPrincipal());
 
-        if (Objects.equals(book.getOwner(), user)) {
-            throw new OperationNotPermittedException("You cannot approve the return of a book you do not own");
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("Only the book owner can approve returns");
         }
 
         BookTransactionHistory bookTransactionHistory = transactionHistoryRepository.findByBookIdAndBookOwnerIdAndReturnedTrueAndReturnApprovedFalse(bookId, user.getId())
                 .orElseThrow(() -> new OperationNotPermittedException("The book is not returned yet. You cannot approve its return"));
+
+
         bookTransactionHistory.setReturnApproved(true);
-        return transactionHistoryRepository.save(bookTransactionHistory).getId();
+        transactionHistoryRepository.save(bookTransactionHistory);
+        // 🎯 fire domain event
+        publisher.publishEvent(new BookReturnedEvent(bookId));
+
+        return bookTransactionHistory.getId();
     }
 
     public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {

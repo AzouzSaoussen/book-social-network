@@ -9,8 +9,8 @@ import com.azouz.book_network_api.user.TokenRepository;
 import com.azouz.book_network_api.user.User;
 import com.azouz.book_network_api.user.UserRepository;
 import jakarta.mail.MessagingException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final RoleRepository roleRepository;
@@ -98,7 +99,9 @@ public class AuthenticationService {
        var claims =  new HashMap<String, Object>();
        var user = ((User)auth.getPrincipal());
        claims.put("fullName", user.fullName());
+       claims.put("userId", user.getId()); //here adding the user id for the websocket connection
        var jwtToken = jwtService.generateToken(user, claims);
+       log.info("Generated Jwt at Authentication: {}", jwtToken);
        return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
