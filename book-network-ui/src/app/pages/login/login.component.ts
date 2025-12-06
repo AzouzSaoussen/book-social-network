@@ -3,6 +3,8 @@ import {AuthenticationRequest} from '../../services/models/authentication-reques
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../../services/services/authentication.service";
 import {TokenService} from "../../services/token/token.service";
+import { NotificationService, NotificationMessage } from '../../services/services/notification.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,7 +15,8 @@ export class LoginComponent {
   errorMsg: Array<string> =[];
   constructor(private router: Router,
               private authService: AuthenticationService,
-              private tokenService: TokenService) {
+              private tokenService: TokenService,
+              private notifications: NotificationService) {
 
   }
   login(): void {
@@ -24,7 +27,15 @@ export class LoginComponent {
         try {
           // Save token securely
           this.tokenService.token = res.token as string;
-
+          // Connect notifications after login
+          const userId = this.tokenService.userId;
+          console.log("the connected user id is {}", userId);
+          if (userId) {
+            console.log("lets start socket connection")
+            this.notifications.connect(userId, (payload: NotificationMessage) => {
+              alert(`Message: ${payload.message}\nBook ID: ${payload.bookId}`);
+            });
+          }
           // Optional: Show success toast or spinner here
           await this.router.navigate(['books']);
           // Optional: success handler

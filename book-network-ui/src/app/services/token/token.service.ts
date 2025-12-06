@@ -12,6 +12,28 @@ export class TokenService {
   get token(){
     return localStorage.getItem('token') as string;
   }
+  get userId(): number | null {
+    const token = this.token;
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userId ?? null;
+    } catch {
+      return null;
+    }
+  }
+  get fullName(): string | null {
+    const token = this.token;
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.fullName ?? null;
+    } catch {
+      return null;
+    }
+  }
 
   isTokenNotValid() {
     return !this.isTokenValid();
