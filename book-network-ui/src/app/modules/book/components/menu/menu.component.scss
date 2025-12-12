@@ -66,5 +66,28 @@
   font-size: 0.7rem;
   padding: 3px 6px;
 }
+.notification-container {
+  cursor: pointer;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 250px;
+  background: white;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 2000;
+}
+
+.dropdown-item {
+  background: #fff;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+}
 
 

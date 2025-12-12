@@ -10,9 +10,9 @@ public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void notifyUser(Integer userId, String message, Integer bookId) {
+    public void notifyUser(Integer userId, String message, Integer bookId, String bookTitle) {
         messagingTemplate.convertAndSend("/topic/user/" + userId,
-                new NotificationMessage(message, bookId));
+                new NotificationMessage(message, bookId, bookTitle));
     }
 }
 

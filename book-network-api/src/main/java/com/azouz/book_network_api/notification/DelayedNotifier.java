@@ -16,15 +16,16 @@ public class DelayedNotifier {
     private final ReservationQueueService queueService;
     private final NotificationService notificationService;
 
+
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
 
-    public void scheduleNextNotification(Integer bookId) {
+    public void scheduleNextNotification(Integer bookId, String bookTitle) {
         scheduler.schedule(() -> {
             User nextUser = queueService.getNextUserAfter(null, bookId);
             if (nextUser != null) {
                 notificationService.notifyUser(nextUser.getId(),
-                        "The book is now available (24h slot)!", bookId);
+                        "The book is now available (24h slot)!", bookId, bookTitle);
             }
         }, 24, TimeUnit.HOURS);
     }

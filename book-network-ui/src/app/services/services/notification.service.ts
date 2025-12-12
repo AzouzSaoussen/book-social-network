@@ -5,6 +5,7 @@ import * as SockJS from 'sockjs-client';
 export interface NotificationMessage {
   message: string;
   bookId: number;
+  bookTitle: string;
 }
 
 @Injectable({ providedIn: 'root' })

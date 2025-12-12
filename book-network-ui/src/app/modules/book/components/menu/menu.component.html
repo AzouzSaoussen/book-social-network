@@ -62,12 +62,27 @@
         <!-- 🔔 Notification Bell -->
         <div class="position-relative me-3 notification-container" (click)="toggleNotifications()">
           <i class="fas fa-bell fs-5 text-secondary"></i>
-
           <!-- Badge -->
           <span *ngIf="notificationCount > 0"
                 class="badge rounded-pill bg-danger notification-badge">
             {{notificationCount}}
           </span>
+          <!-- ⭐ Notification Dropdown -->
+          <div *ngIf="showNotifications"
+               class="notification-dropdown shadow-sm">
+
+            <div *ngIf="notifications.length === 0" class="p-3 text-muted small">
+              No notifications yet
+            </div>
+
+            <div *ngFor="let n of notifications" class="dropdown-item border-bottom p-3">
+              <strong>{{n.message}}</strong>
+              <div class="text-muted small">
+                Book: {{n.bookTitle}}
+              </div>
+            </div>
+
+          </div>
         </div>
 
         <span>Welcome,</span>
@@ -121,13 +136,12 @@
       </a>
     </li>
     <li>
-      <a (click)="toggleNotifications()">
-        <i class="fas fa-bell"></i>&nbsp;Notifications
-        <span *ngIf="notificationCount > 0"
-              class="badge bg-danger ms-2">
-      {{notificationCount}}
-    </span>
-      </a>
+      <div *ngFor="let n of notifications" class="p-3 border-bottom">
+        <strong>{{n.message}}</strong>
+        <div class="text-muted small">
+          Book: {{n.bookTitle || n.bookId}}
+        </div>
+      </div>
     </li>
 
 
